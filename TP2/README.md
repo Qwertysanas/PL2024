@@ -5,7 +5,7 @@
 
 Este trabalho consiste em desenvolver em **[Python](https://www.python.org/)** um pequeno conversor de MarkDown para *HTML* para os elementos descritos na *Basic Syntax* apresentada na *Cheat Sheet* do **[Markdown Guide](https://www.markdownguide.org/cheat-sheet/)**.
 
-## Resolução do problema
+## Resolução
 
 O método usado na resolução deste trabalho foi o uso de **grupos de captura** nas expressões regulares e **funções lambda** de modo a substituir os segmentos pretendidos por formatação *HTML*. Uma alternativa às funções anónimas é selecionar os grupo de captura com **números escapados por barra**.
 
@@ -37,4 +37,5 @@ Aqui apresenta-se a prática de uso de **regular expressions** com a ferramenta 
 ## Execução
 
 A execução deste TP pode ser realizada através do seguinte comando:
-`$>python3 main.py README.md > README.html`
+
+    `$>python3 main.py README.md > README.html`
