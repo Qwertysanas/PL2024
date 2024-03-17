@@ -1,9 +1,7 @@
 import sys
 import re
 
-h1 = (r"^#{1} ([^\n]*)")
-h2 = (r"^#{2} ([^\n]*)")
-h3 = (r"^#{3} ([^\n]*)")
+h1 = (r"^(#{1,3}) ([^\n]*)")
 b = (r"\*{2}([^*]*)\*{2}")
 it = (r"\*{1}([^*]+)\*{1}")
 li = r"(?:1. ([^\n]*))"
@@ -25,14 +23,10 @@ def replace(str):
         lb = False
     str = re.sub(b, lambda x: "<b>" + x[1] + "</b>", str)
     str = re.sub(it, lambda x: "<i>" + x[1] + "</i>", str)
-    str = re.sub(im, lambda x: '<img src="' + x[2] + '" alt="' + x[1] + '">', str)
-    str = re.sub(l, lambda x: '<a href="' + x[2] + '">' + x[1] + "</a>", str)
+    str = re.sub(im, r'<img src="\2" alt="\1">', str)
+    str = re.sub(l, r'<a href="\2">\1</a>', str)
     if re.match(h1, str) != None:
-        return re.sub(h1, r"<h1>\1</h1>", str)
-    if re.match(h2, str) != None:    
-        return re.sub(h2, r"<h2>\1</h2>", str)
-    if re.match(h3, str) != None:    
-        return re.sub(h3, r"<h3>\1</h3>", str)    
+        return re.sub(h1, lambda x: f"<h{len(x[1])}>{x[2]}</h{len(x[1])}>", str)
     return str
 
 def main(inp):
