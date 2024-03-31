@@ -33,6 +33,7 @@ def main(inp):
         for l in file:
             tok(l)
         eval()
+        file.close()
     return
 
 if __name__ == "__main__":

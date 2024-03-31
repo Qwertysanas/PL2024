@@ -14,4 +14,4 @@ Para gerar a lista de modalidades foi usado um *set* e um sort no fim para orden
 
 A execução deste TP pode ser realizada através do seguinte comando:
     
-    `$>python3 main.py README.md > emd.out`
+    $ python3 main.py README.md > emd.out

@@ -38,4 +38,4 @@ Aqui está uma imagem de uma calculadora
 
 A execução deste TP pode ser realizada através do seguinte comando:
     
-    `$>python3 main.py README.md > README_sum`
+    $ python3 main.py README.md > README.sum

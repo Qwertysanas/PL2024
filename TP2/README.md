@@ -38,4 +38,4 @@ Aqui apresenta-se a prática de uso de **regular expressions** com a ferramenta 
 
 A execução deste TP pode ser realizada através do seguinte comando:
 
-    `$>python3 main.py README.md > README.html`
+    $ python3 main.py README.md > README.html

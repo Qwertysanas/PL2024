@@ -37,6 +37,7 @@ def main(inp):
         file = open(inp[1])
         for l in file:
             print(replace(l), end="")
+        file.close()
     return
 
 if __name__ == "__main__":
