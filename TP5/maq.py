@@ -1,6 +1,5 @@
 import json
 import re
-from ply import lex as lex
 
 # Utils:
 
@@ -18,6 +17,10 @@ def int2euros(cost : int) -> str:
         return cents
     euros = str(cost)[:-2] + 'e'
     return euros + cents
+
+# Conversão de float (em euros) para int (centimos)
+def float2cents(cost : float) -> int:
+    return int(cost * 100)
 
 # Classe de uma máquina de vending
 class MaquinaV:
@@ -57,29 +60,47 @@ class MaquinaV:
             if item["cod"] == code:
                 return item
         return None
+    
+    # Mudança da quantidade de um item no stock
+    def add_item(self, code : str, quantity : int) -> str:
+        item = self.select_item(code)
+        if not item:
+            return "[ERRO] Código inválido"
+        item['quant'] += quantity
+        return str(item["quant"]) + "x unidades de " + item["nome"] + " adicionadas ao stock"
+    
+    # Adição de um item ao stock
+    def new_item(self, code : str, name : str, quantity : int, price : float) -> str:
+        self.stock.append({
+            "cod": code,
+            "nome": name,
+            "quant": quantity,
+            "preco": price
+        })
+        return "Item " + name + " adicionado ao stock, código: " + code
 
     # Lista de items disponíveis
     def printable_stock(self) -> str:
-        res = "\ncod | nome               | quant | preco\n"
+        res = "cod | nome               | quant | preco"
         for item in self.stock:
-            res += (item["cod"] + " | "
+            res += '\n' + (item["cod"] + " | "
                 + item["nome"] + (19 - len(item["nome"])) * ' ' + "| "
                 + str(item["quant"]) + (6 - len(str(item["quant"]))) * ' ' + "| "
-                + int2euros(item["preco"]) + '\n')
+                + int2euros(float2cents(item["preco"])))
         return res
 
     # Lista de items disponíveis, cor de erro -> indisponível, cor de aviso -> sem saldo suficiente
     def pcolours_stock(self) -> str:
-        res = "\ncod | nome               | quant | preco\n"
+        res = "cod | nome               | quant | preco"
         for item in self.stock:
             if item["quant"] == 0:
                 res += '\033[91m'
             elif item["preco"] > self.balance:
                 res += '\033[93m'
-            res += (item["cod"] + " | "
+            res += '\n' + (item["cod"] + " | "
                 + item["nome"] + (19 - len(item["nome"])) * ' ' + "| "
                 + str(item["quant"]) + (6 - len(str(item["quant"]))) * ' ' + "| "
-                + int2euros(item["preco"]) + "\033[0m" + '\n')
+                + int2euros(float2cents(item["preco"])) + "\033[0m")
         return res
 
     # Compra de um item, devolve uma lista de strings com informações sobre a compra
@@ -92,18 +113,11 @@ class MaquinaV:
         if self.balance < item['preco']:
             return ("Saldo insuficiente para satisfazer o seu pedido\n" 
                     + self.printable_balance() + "; " + "Pedido = " + int2euros(item['preco']))
-        self.take_balance(item['preco'])
+        self.take_balance(float2cents(item["preco"]))
         item['quant'] -= 1
         return ('Pode retirar o produto dispensado "' + item["nome"] + '"\n'
                 + self.printable_balance())
-        
 
-m = MaquinaV("stock.json")
-print(m.printable_stock())
-print(m.add_balance(340))
-print(m.buy("A23"))
-print(m.buy("B25"))
-print(m.buy("B25"))
-print(m.buy("A23"))
-print(m.buy("A23"))
-print(m.buy("C30"))
+    def __str__(self) -> str:
+        return (self.printable_stock()
+                + '\n' + self.printable_balance())
