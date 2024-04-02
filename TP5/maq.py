@@ -3,6 +3,9 @@ import re
 
 # Utils:
 
+# Dicionário de moedas
+cdict = {1 : 200, 2 : 100, 3 : 50, 4 : 20, 5 : 10, 6 : 5}
+
 # Conversão de float para euros (str)
 def float2euros(cost : float) -> str:
     cents = str(cost * 100).split('.')[0] + 'c'
@@ -54,6 +57,39 @@ class MaquinaV:
         self.balance -= amount
         return self.printable_balance
     
+    # Leitura de uma moeda
+    def add_coin(self, coin : str) -> str:
+        coin = re.sub(r"(\d+)e", lambda x: str(int(x[1]) * 100), coin)
+        coin = re.sub(r"(\d+)c", lambda x: x[1], coin)
+        self.add_balance(int(coin))
+        return self.printable_balance()
+    
+    # Leitura de uma lista de moedas
+    def add_coins(self, coins : list) -> str:
+        for coin in coins:
+            self.add_coin(coin)
+        return self.printable_balance()
+
+    # Devolução do saldo
+    def get_coins(self) -> str:
+        global cdict
+        rdict = {}
+        for k in cdict:
+            rdict[k] = 0
+            
+        for k in cdict:
+            while self.balance >= cdict[k]:
+                self.balance -= cdict[k]
+                rdict[k] += 1
+        
+        res = "Pode retirar o troco: "
+        for k in rdict:
+            if rdict[k]:
+                res += str(rdict[k]) + "x " + int2euros(cdict[k]) + ", "
+        
+        self.balance = 0
+        return res[:-2] + '.'
+
     # Seleção de um item pelo código, devolve um dicionário
     def select_item(self, code : str) -> dict:
         for item in self.stock:
@@ -117,6 +153,11 @@ class MaquinaV:
         item['quant'] -= 1
         return ('Pode retirar o produto dispensado "' + item["nome"] + '"\n'
                 + self.printable_balance())
+    
+    # Sair
+    def exit(self) -> str:
+        self.save()
+        return self.get_coins()
 
     def __str__(self) -> str:
         return (self.printable_stock()

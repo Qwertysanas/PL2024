@@ -1,45 +1,21 @@
-from ply import lex as lex
+import sys
+from lexer import Lexer
+from maq import MaquinaV
+from datetime import datetime
 
-# Lista de tokens
-tokens = (
-    "LISTAR",
-    "MOEDA",
-    "SELECIONAR",
-    "SALDO",
-    "SAIR",
-    "ADICIONAR")
+def printm(msg):
+    print("maq: " + msg)
+    return
 
-# Literais
-literals = ["2e", "1e", "50c", "20c", "10c", "5c"]
+def main(inp):
+    # Inicialização da máquina
+    maq = MaquinaV("stock.json")
+    
+    printm(datetime.now().strftime("%d-%m-%y") + ", Stock carregado, Estado atualizado.")
+    printm("Bom dia. Estou disponível para atender o seu pedido.")
 
-# Expressões regulares para os tokens
-def t_LISTAR(t):
-    r"listar"
-    return t
+    
+    return
 
-def t_MOEDA(t):
-    r"MOEDA"
-    return t
-
-def t_SELECIONAR(t):
-    r"SELECIONAR"
-    return t
-
-def t_SALDO(t):
-    r"SALDO"
-    return t
-
-def t_SAIR(t):
-    r"SAIR"
-    return t
-
-def t_ADICIONAR(t):
-    r"ADICIONAR"
-    return t
-
-# Ignorar whitespaces e newlines e Error handling
-t_ignore = " \t\n"
-def t_error(t):
-    print("Carácter ilegal: ", t.value[0])
-    t.lexer.skip(1)
-
+if __name__ == "__main__":
+    main(sys.argv)
