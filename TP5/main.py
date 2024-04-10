@@ -10,11 +10,9 @@ def printm(msg):
 def main(inp):
     # Inicialização da máquina
     maq = MaquinaV("stock.json")
-    
-    printm(datetime.now().strftime("%d-%m-%y") + ", Stock carregado, Estado atualizado.")
-    printm("Bom dia. Estou disponível para atender o seu pedido.")
 
-    
+    # Correr a máquina
+    maq.start()
     return
 
 if __name__ == "__main__":

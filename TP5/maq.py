@@ -1,5 +1,8 @@
 import json
 import re
+import sys
+from datetime import datetime
+from lexer import Lexer
 
 # Utils:
 
@@ -30,6 +33,7 @@ class MaquinaV:
 
     # Inicialização da máquina
     def __init__(self, stock_path : str) -> None:
+        self.lexer = Lexer()
         self.balance = 0
         self.stock_path = stock_path
         stock_file = open(stock_path, 'r')
@@ -72,6 +76,8 @@ class MaquinaV:
 
     # Devolução do saldo
     def get_coins(self) -> str:
+        if self.balance == 0:
+            return "Não tem saldo a devolver."
         global cdict
         rdict = {}
         for k in cdict:
@@ -131,7 +137,7 @@ class MaquinaV:
         for item in self.stock:
             if item["quant"] == 0:
                 res += '\033[91m'
-            elif item["preco"] > self.balance:
+            elif item["preco"] * 100 > self.balance:
                 res += '\033[93m'
             res += '\n' + (item["cod"] + " | "
                 + item["nome"] + (19 - len(item["nome"])) * ' ' + "| "
@@ -145,9 +151,9 @@ class MaquinaV:
         if not item:
             return "[ERRO] Código inválido"
         if item['quant'] == 0:
-            return "Produto esgotado"
+            return "[ERRO] Produto esgotado"
         if self.balance < item['preco']:
-            return ("Saldo insuficiente para satisfazer o seu pedido\n" 
+            return ("[ERRO] Saldo insuficiente para satisfazer o seu pedido\n" 
                     + self.printable_balance() + "; " + "Pedido = " + int2euros(item['preco']))
         self.take_balance(float2cents(item["preco"]))
         item['quant'] -= 1
@@ -162,3 +168,56 @@ class MaquinaV:
     def __str__(self) -> str:
         return (self.printable_stock()
                 + '\n' + self.printable_balance())
+
+    def start(self) -> None:
+        print(datetime.now().strftime("%d-%m-%y") + ", Stock carregado, Estado atualizado.")
+        print("Bom dia. Estou disponível para atender o seu pedido.")
+        for line in sys.stdin:
+            try:
+                self.lexer.lexer.input(line)
+                for tok in self.lexer.lexer:
+                    if tok.type == "LISTARC":
+                        print(self.pcolours_stock())
+                        pass
+                    elif tok.type == "LISTAR":
+                        print(self.printable_stock())
+                        pass
+                    elif tok.type == "MOEDA":
+                        coins = []
+                        try:
+                            while (tok.type != '.'):
+                                tok = self.lexer.lexer.token()
+                                if tok != None and tok.type == "TMOEDA":
+                                    coins.append(tok.value)
+                            print(self.add_coins(coins))
+                        except Exception:
+                            print("[ERRO] Sequência inválida")
+                            print("[SUGESTAO] talvez falte um '.'")
+                            break
+                        pass
+                    elif tok.type == "SELECIONAR":
+                        try:
+                            tok = self.lexer.lexer.token()
+                            if tok.type == "ID":
+                                print(self.buy(tok.value))
+                            else:
+                                print("[ERRO] Código não encontrado")
+                        except Exception as e:
+                            print(e)
+                            print("[SUGESTAO] Formato de ID: [A-Z][A-Z0-9]+")
+                            break
+                        pass
+                    elif tok.type == "SALDO":
+                        print(self.printable_balance())
+                        pass
+                    elif tok.type == "SAIR":
+                        print(self.exit())
+                        return
+                        pass
+                    elif tok.type == "ADICIONAR":
+                        # Extra por fazer
+                        pass
+            except Exception as e:
+                print(e)
+                print("HELP: LISTARC|LISTAR|MOEDA|SELECIONAR|SALDO|SAIR")
+        return

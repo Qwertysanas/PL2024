@@ -33,7 +33,7 @@ class Lexer:
         return t
 
     def t_TMOEDA(self, t):
-        r"\d+[ec]"
+        r"([12]e)|([125]0c)|(5c)"
         return t
 
     def t_MOEDA(self, t):
@@ -42,6 +42,7 @@ class Lexer:
     
     def t_SELECIONAR(self, t):
         r"SELECIONAR"
+        t.value = t.value[10:]
         return t
 
     def t_SALDO(self, t):
@@ -57,7 +58,7 @@ class Lexer:
         return t
 
     def t_ID(self, t):
-        r"[A-Z][A-Z0-9]*"
+        r"[A-Z][A-Z0-9]+"
         return t
 
     def t_NEWLINE(self, t):
@@ -68,5 +69,5 @@ class Lexer:
     # Ignorar whitespaces e newlines e Error handling
     t_ignore = " \t"
     def t_error(self, t):
-        print("Carácter ilegal: ", t.value[0])
+        raise Exception("[ERRO] Carácter inválido: " + t.value[0])
         t.lexer.skip(1)
