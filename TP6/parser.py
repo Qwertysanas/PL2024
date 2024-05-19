@@ -21,20 +21,24 @@ class Parser:
     def p_op2(self, p):    "op : '?' ID"
     def p_op3(self, p):    "op : ID '=' expr"
 
-    def p_expr1(self, p):  "expr : term '*' expr"
-    def p_expr2(self, p):  "expr : term '/' expr"
-    def p_expr3(self, p):  "expr : term"
+    def p_expr1(self, p):  "expr : term infix6"
 
-    def p_term1(self, p):  "term : factor '+' term"
-    def p_term2(self, p):  "term : factor '-' term"
-    def p_term3(self, p):  "term : factor"
+    def p_infix61(self, p): "infix6 : '+' expr"
+    def p_infix62(self, p): "infix6 : '-' expr"
+    def p_infix60(self, p): "infix6 : "
+
+    def p_term1(self, p):  "term : factor infix7"
+
+    def p_infix71(self, p): "infix7 : '*' term"
+    def p_infix72(self, p): "infix7 : '/' term"
+    def p_infix70(self, p): "infix7 : "
 
     def p_factor1(self, p): "factor : NUMBER"
     def p_factor2(self, p): "factor : ID"
     def p_factor3(self, p): "factor : '(' expr ')'"
 
     def p_error(self, p):
-        print(f"Syntax error at {p.value}, column {p.lexpos}, line {p.lineno}")
+        print(f"Syntax error at {p.value}, position {p.lexpos + 1}, line {p.lineno}")
 
     def parse(self, s):
         self.parser.parse(s)

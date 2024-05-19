@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = "ID NL NUMBERZ : codecode : op codeopcode : codeop : NL codecodeop : op : '!' exprop : '?' IDop : ID '=' exprexpr : term '*' exprexpr : term '/' exprexpr : termterm : factor '+' termterm : factor '-' termterm : factorfactor : NUMBERfactor : IDfactor : '(' expr ')'"
+_lr_signature = "ID NL NUMBERZ : codecode : op codeopcode : codeop : NL codecodeop : op : '!' exprop : '?' IDop : ID '=' exprexpr : term infix6infix6 : '+' exprinfix6 : '-' exprinfix6 : term : factor infix7infix7 : '*' terminfix7 : '/' terminfix7 : factor : NUMBERfactor : IDfactor : '(' expr ')'"
     
-_lr_action_items = {'$end':([0,1,2,3,7,8,9,10,11,12,13,15,17,23,24,25,26,27,28,],[-3,0,-1,-5,-2,-3,-6,-11,-14,-15,-16,-7,-4,-8,-9,-10,-12,-13,-17,]),'!':([0,8,],[4,4,]),'?':([0,8,],[5,5,]),'ID':([0,4,5,8,14,16,18,19,20,21,],[6,13,15,6,13,13,13,13,13,13,]),'NL':([3,9,10,11,12,13,15,23,24,25,26,27,28,],[8,-6,-11,-14,-15,-16,-7,-8,-9,-10,-12,-13,-17,]),'NUMBER':([4,14,16,18,19,20,21,],[12,12,12,12,12,12,12,]),'(':([4,14,16,18,19,20,21,],[14,14,14,14,14,14,14,]),'=':([6,],[16,]),'*':([10,11,12,13,26,27,28,],[18,-14,-15,-16,-12,-13,-17,]),'/':([10,11,12,13,26,27,28,],[19,-14,-15,-16,-12,-13,-17,]),')':([10,11,12,13,22,24,25,26,27,28,],[-11,-14,-15,-16,28,-9,-10,-12,-13,-17,]),'+':([11,12,13,28,],[20,-15,-16,-17,]),'-':([11,12,13,28,],[21,-15,-16,-17,]),}
+_lr_action_items = {'$end':([0,1,2,3,7,8,9,10,11,12,13,15,17,18,21,25,26,27,28,29,30,],[-3,0,-1,-5,-2,-3,-6,-12,-16,-17,-18,-7,-4,-9,-13,-8,-10,-11,-14,-15,-19,]),'!':([0,8,],[4,4,]),'?':([0,8,],[5,5,]),'ID':([0,4,5,8,14,16,19,20,22,23,],[6,13,15,6,13,13,13,13,13,13,]),'NL':([3,9,10,11,12,13,15,18,21,25,26,27,28,29,30,],[8,-6,-12,-16,-17,-18,-7,-9,-13,-8,-10,-11,-14,-15,-19,]),'NUMBER':([4,14,16,19,20,22,23,],[12,12,12,12,12,12,12,]),'(':([4,14,16,19,20,22,23,],[14,14,14,14,14,14,14,]),'=':([6,],[16,]),'+':([10,11,12,13,21,28,29,30,],[19,-16,-17,-18,-13,-14,-15,-19,]),'-':([10,11,12,13,21,28,29,30,],[20,-16,-17,-18,-13,-14,-15,-19,]),')':([10,11,12,13,18,21,24,26,27,28,29,30,],[-12,-16,-17,-18,-9,-13,30,-10,-11,-14,-15,-19,]),'*':([11,12,13,30,],[22,-17,-18,-19,]),'/':([11,12,13,30,],[23,-17,-18,-19,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'Z':([0,],[1,]),'code':([0,8,],[2,17,]),'op':([0,8,],[3,3,]),'codeop':([3,],[7,]),'expr':([4,14,16,18,19,],[9,22,23,24,25,]),'term':([4,14,16,18,19,20,21,],[10,10,10,10,10,26,27,]),'factor':([4,14,16,18,19,20,21,],[11,11,11,11,11,11,11,]),}
+_lr_goto_items = {'Z':([0,],[1,]),'code':([0,8,],[2,17,]),'op':([0,8,],[3,3,]),'codeop':([3,],[7,]),'expr':([4,14,16,19,20,],[9,24,25,26,27,]),'term':([4,14,16,19,20,22,23,],[10,10,10,10,10,28,29,]),'factor':([4,14,16,19,20,22,23,],[11,11,11,11,11,11,11,]),'infix6':([10,],[18,]),'infix7':([11,],[21,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,21 +27,23 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> Z","S'",1,None,None,None),
-  ('Z -> code','Z',1,'p_Start','parser.py',11),
-  ('code -> op codeop','code',2,'p_code1','parser.py',13),
-  ('code -> <empty>','code',0,'p_code2','parser.py',14),
-  ('codeop -> NL code','codeop',2,'p_codeop1','parser.py',16),
-  ('codeop -> <empty>','codeop',0,'p_codeop0','parser.py',17),
-  ('op -> ! expr','op',2,'p_op1','parser.py',19),
-  ('op -> ? ID','op',2,'p_op2','parser.py',20),
-  ('op -> ID = expr','op',3,'p_op3','parser.py',21),
-  ('expr -> term * expr','expr',3,'p_expr1','parser.py',23),
-  ('expr -> term / expr','expr',3,'p_expr2','parser.py',24),
-  ('expr -> term','expr',1,'p_expr3','parser.py',25),
-  ('term -> factor + term','term',3,'p_term1','parser.py',27),
-  ('term -> factor - term','term',3,'p_term2','parser.py',28),
-  ('term -> factor','term',1,'p_term3','parser.py',29),
-  ('factor -> NUMBER','factor',1,'p_factor1','parser.py',31),
-  ('factor -> ID','factor',1,'p_factor2','parser.py',32),
-  ('factor -> ( expr )','factor',3,'p_factor3','parser.py',33),
+  ('Z -> code','Z',1,'p_Start','parser.py',13),
+  ('code -> op codeop','code',2,'p_code1','parser.py',15),
+  ('code -> <empty>','code',0,'p_code2','parser.py',16),
+  ('codeop -> NL code','codeop',2,'p_codeop1','parser.py',18),
+  ('codeop -> <empty>','codeop',0,'p_codeop0','parser.py',19),
+  ('op -> ! expr','op',2,'p_op1','parser.py',21),
+  ('op -> ? ID','op',2,'p_op2','parser.py',22),
+  ('op -> ID = expr','op',3,'p_op3','parser.py',23),
+  ('expr -> term infix6','expr',2,'p_expr1','parser.py',25),
+  ('infix6 -> + expr','infix6',2,'p_infix61','parser.py',27),
+  ('infix6 -> - expr','infix6',2,'p_infix62','parser.py',28),
+  ('infix6 -> <empty>','infix6',0,'p_infix60','parser.py',29),
+  ('term -> factor infix7','term',2,'p_term1','parser.py',31),
+  ('infix7 -> * term','infix7',2,'p_infix71','parser.py',33),
+  ('infix7 -> / term','infix7',2,'p_infix72','parser.py',34),
+  ('infix7 -> <empty>','infix7',0,'p_infix70','parser.py',35),
+  ('factor -> NUMBER','factor',1,'p_factor1','parser.py',37),
+  ('factor -> ID','factor',1,'p_factor2','parser.py',38),
+  ('factor -> ( expr )','factor',3,'p_factor3','parser.py',39),
 ]

@@ -11,30 +11,32 @@ Rule 5     codeop -> <empty>
 Rule 6     op -> ! expr
 Rule 7     op -> ? ID
 Rule 8     op -> ID = expr
-Rule 9     expr -> term * expr
-Rule 10    expr -> term / expr
-Rule 11    expr -> term
-Rule 12    term -> factor + term
-Rule 13    term -> factor - term
-Rule 14    term -> factor
-Rule 15    factor -> NUMBER
-Rule 16    factor -> ID
-Rule 17    factor -> ( expr )
+Rule 9     expr -> term infix6
+Rule 10    infix6 -> + expr
+Rule 11    infix6 -> - expr
+Rule 12    infix6 -> <empty>
+Rule 13    term -> factor infix7
+Rule 14    infix7 -> * term
+Rule 15    infix7 -> / term
+Rule 16    infix7 -> <empty>
+Rule 17    factor -> NUMBER
+Rule 18    factor -> ID
+Rule 19    factor -> ( expr )
 
 Terminals, with rules where they appear
 
 !                    : 6
-(                    : 17
-)                    : 17
-*                    : 9
-+                    : 12
--                    : 13
-/                    : 10
+(                    : 19
+)                    : 19
+*                    : 14
++                    : 10
+-                    : 11
+/                    : 15
 =                    : 8
 ?                    : 7
-ID                   : 7 8 16
+ID                   : 7 8 18
 NL                   : 4
-NUMBER               : 15
+NUMBER               : 17
 error                : 
 
 Nonterminals, with rules where they appear
@@ -42,10 +44,12 @@ Nonterminals, with rules where they appear
 Z                    : 0
 code                 : 1 4
 codeop               : 2
-expr                 : 6 8 9 10 17
-factor               : 12 13 14
+expr                 : 6 8 10 11 19
+factor               : 13
+infix6               : 9
+infix7               : 13
 op                   : 2
-term                 : 9 10 11 12 13
+term                 : 9 14 15
 
 Parsing method: LALR
 
@@ -95,15 +99,11 @@ state 3
 state 4
 
     (6) op -> ! . expr
-    (9) expr -> . term * expr
-    (10) expr -> . term / expr
-    (11) expr -> . term
-    (12) term -> . factor + term
-    (13) term -> . factor - term
-    (14) term -> . factor
-    (15) factor -> . NUMBER
-    (16) factor -> . ID
-    (17) factor -> . ( expr )
+    (9) expr -> . term infix6
+    (13) term -> . factor infix7
+    (17) factor -> . NUMBER
+    (18) factor -> . ID
+    (19) factor -> . ( expr )
 
     NUMBER          shift and go to state 12
     ID              shift and go to state 13
@@ -161,76 +161,76 @@ state 9
 
 state 10
 
-    (9) expr -> term . * expr
-    (10) expr -> term . / expr
-    (11) expr -> term .
+    (9) expr -> term . infix6
+    (10) infix6 -> . + expr
+    (11) infix6 -> . - expr
+    (12) infix6 -> .
 
-    *               shift and go to state 18
-    /               shift and go to state 19
-    NL              reduce using rule 11 (expr -> term .)
-    $end            reduce using rule 11 (expr -> term .)
-    )               reduce using rule 11 (expr -> term .)
+    +               shift and go to state 19
+    -               shift and go to state 20
+    NL              reduce using rule 12 (infix6 -> .)
+    $end            reduce using rule 12 (infix6 -> .)
+    )               reduce using rule 12 (infix6 -> .)
 
+    infix6                         shift and go to state 18
 
 state 11
 
-    (12) term -> factor . + term
-    (13) term -> factor . - term
-    (14) term -> factor .
+    (13) term -> factor . infix7
+    (14) infix7 -> . * term
+    (15) infix7 -> . / term
+    (16) infix7 -> .
 
-    +               shift and go to state 20
-    -               shift and go to state 21
-    *               reduce using rule 14 (term -> factor .)
-    /               reduce using rule 14 (term -> factor .)
-    NL              reduce using rule 14 (term -> factor .)
-    $end            reduce using rule 14 (term -> factor .)
-    )               reduce using rule 14 (term -> factor .)
+    *               shift and go to state 22
+    /               shift and go to state 23
+    +               reduce using rule 16 (infix7 -> .)
+    -               reduce using rule 16 (infix7 -> .)
+    NL              reduce using rule 16 (infix7 -> .)
+    $end            reduce using rule 16 (infix7 -> .)
+    )               reduce using rule 16 (infix7 -> .)
 
+    infix7                         shift and go to state 21
 
 state 12
 
-    (15) factor -> NUMBER .
+    (17) factor -> NUMBER .
 
-    +               reduce using rule 15 (factor -> NUMBER .)
-    -               reduce using rule 15 (factor -> NUMBER .)
-    *               reduce using rule 15 (factor -> NUMBER .)
-    /               reduce using rule 15 (factor -> NUMBER .)
-    NL              reduce using rule 15 (factor -> NUMBER .)
-    $end            reduce using rule 15 (factor -> NUMBER .)
-    )               reduce using rule 15 (factor -> NUMBER .)
+    *               reduce using rule 17 (factor -> NUMBER .)
+    /               reduce using rule 17 (factor -> NUMBER .)
+    +               reduce using rule 17 (factor -> NUMBER .)
+    -               reduce using rule 17 (factor -> NUMBER .)
+    NL              reduce using rule 17 (factor -> NUMBER .)
+    $end            reduce using rule 17 (factor -> NUMBER .)
+    )               reduce using rule 17 (factor -> NUMBER .)
 
 
 state 13
 
-    (16) factor -> ID .
+    (18) factor -> ID .
 
-    +               reduce using rule 16 (factor -> ID .)
-    -               reduce using rule 16 (factor -> ID .)
-    *               reduce using rule 16 (factor -> ID .)
-    /               reduce using rule 16 (factor -> ID .)
-    NL              reduce using rule 16 (factor -> ID .)
-    $end            reduce using rule 16 (factor -> ID .)
-    )               reduce using rule 16 (factor -> ID .)
+    *               reduce using rule 18 (factor -> ID .)
+    /               reduce using rule 18 (factor -> ID .)
+    +               reduce using rule 18 (factor -> ID .)
+    -               reduce using rule 18 (factor -> ID .)
+    NL              reduce using rule 18 (factor -> ID .)
+    $end            reduce using rule 18 (factor -> ID .)
+    )               reduce using rule 18 (factor -> ID .)
 
 
 state 14
 
-    (17) factor -> ( . expr )
-    (9) expr -> . term * expr
-    (10) expr -> . term / expr
-    (11) expr -> . term
-    (12) term -> . factor + term
-    (13) term -> . factor - term
-    (14) term -> . factor
-    (15) factor -> . NUMBER
-    (16) factor -> . ID
-    (17) factor -> . ( expr )
+    (19) factor -> ( . expr )
+    (9) expr -> . term infix6
+    (13) term -> . factor infix7
+    (17) factor -> . NUMBER
+    (18) factor -> . ID
+    (19) factor -> . ( expr )
 
     NUMBER          shift and go to state 12
     ID              shift and go to state 13
     (               shift and go to state 14
 
-    expr                           shift and go to state 22
+    expr                           shift and go to state 24
     term                           shift and go to state 10
     factor                         shift and go to state 11
 
@@ -245,21 +245,17 @@ state 15
 state 16
 
     (8) op -> ID = . expr
-    (9) expr -> . term * expr
-    (10) expr -> . term / expr
-    (11) expr -> . term
-    (12) term -> . factor + term
-    (13) term -> . factor - term
-    (14) term -> . factor
-    (15) factor -> . NUMBER
-    (16) factor -> . ID
-    (17) factor -> . ( expr )
+    (9) expr -> . term infix6
+    (13) term -> . factor infix7
+    (17) factor -> . NUMBER
+    (18) factor -> . ID
+    (19) factor -> . ( expr )
 
     NUMBER          shift and go to state 12
     ID              shift and go to state 13
     (               shift and go to state 14
 
-    expr                           shift and go to state 23
+    expr                           shift and go to state 25
     term                           shift and go to state 10
     factor                         shift and go to state 11
 
@@ -272,88 +268,96 @@ state 17
 
 state 18
 
-    (9) expr -> term * . expr
-    (9) expr -> . term * expr
-    (10) expr -> . term / expr
-    (11) expr -> . term
-    (12) term -> . factor + term
-    (13) term -> . factor - term
-    (14) term -> . factor
-    (15) factor -> . NUMBER
-    (16) factor -> . ID
-    (17) factor -> . ( expr )
+    (9) expr -> term infix6 .
 
-    NUMBER          shift and go to state 12
-    ID              shift and go to state 13
-    (               shift and go to state 14
+    NL              reduce using rule 9 (expr -> term infix6 .)
+    $end            reduce using rule 9 (expr -> term infix6 .)
+    )               reduce using rule 9 (expr -> term infix6 .)
 
-    term                           shift and go to state 10
-    expr                           shift and go to state 24
-    factor                         shift and go to state 11
 
 state 19
 
-    (10) expr -> term / . expr
-    (9) expr -> . term * expr
-    (10) expr -> . term / expr
-    (11) expr -> . term
-    (12) term -> . factor + term
-    (13) term -> . factor - term
-    (14) term -> . factor
-    (15) factor -> . NUMBER
-    (16) factor -> . ID
-    (17) factor -> . ( expr )
+    (10) infix6 -> + . expr
+    (9) expr -> . term infix6
+    (13) term -> . factor infix7
+    (17) factor -> . NUMBER
+    (18) factor -> . ID
+    (19) factor -> . ( expr )
 
     NUMBER          shift and go to state 12
     ID              shift and go to state 13
     (               shift and go to state 14
 
+    expr                           shift and go to state 26
     term                           shift and go to state 10
-    expr                           shift and go to state 25
     factor                         shift and go to state 11
 
 state 20
 
-    (12) term -> factor + . term
-    (12) term -> . factor + term
-    (13) term -> . factor - term
-    (14) term -> . factor
-    (15) factor -> . NUMBER
-    (16) factor -> . ID
-    (17) factor -> . ( expr )
+    (11) infix6 -> - . expr
+    (9) expr -> . term infix6
+    (13) term -> . factor infix7
+    (17) factor -> . NUMBER
+    (18) factor -> . ID
+    (19) factor -> . ( expr )
 
     NUMBER          shift and go to state 12
     ID              shift and go to state 13
     (               shift and go to state 14
 
+    expr                           shift and go to state 27
+    term                           shift and go to state 10
     factor                         shift and go to state 11
-    term                           shift and go to state 26
 
 state 21
 
-    (13) term -> factor - . term
-    (12) term -> . factor + term
-    (13) term -> . factor - term
-    (14) term -> . factor
-    (15) factor -> . NUMBER
-    (16) factor -> . ID
-    (17) factor -> . ( expr )
+    (13) term -> factor infix7 .
+
+    +               reduce using rule 13 (term -> factor infix7 .)
+    -               reduce using rule 13 (term -> factor infix7 .)
+    NL              reduce using rule 13 (term -> factor infix7 .)
+    $end            reduce using rule 13 (term -> factor infix7 .)
+    )               reduce using rule 13 (term -> factor infix7 .)
+
+
+state 22
+
+    (14) infix7 -> * . term
+    (13) term -> . factor infix7
+    (17) factor -> . NUMBER
+    (18) factor -> . ID
+    (19) factor -> . ( expr )
 
     NUMBER          shift and go to state 12
     ID              shift and go to state 13
     (               shift and go to state 14
 
+    term                           shift and go to state 28
     factor                         shift and go to state 11
-    term                           shift and go to state 27
-
-state 22
-
-    (17) factor -> ( expr . )
-
-    )               shift and go to state 28
-
 
 state 23
+
+    (15) infix7 -> / . term
+    (13) term -> . factor infix7
+    (17) factor -> . NUMBER
+    (18) factor -> . ID
+    (19) factor -> . ( expr )
+
+    NUMBER          shift and go to state 12
+    ID              shift and go to state 13
+    (               shift and go to state 14
+
+    term                           shift and go to state 29
+    factor                         shift and go to state 11
+
+state 24
+
+    (19) factor -> ( expr . )
+
+    )               shift and go to state 30
+
+
+state 25
 
     (8) op -> ID = expr .
 
@@ -361,55 +365,55 @@ state 23
     $end            reduce using rule 8 (op -> ID = expr .)
 
 
-state 24
-
-    (9) expr -> term * expr .
-
-    NL              reduce using rule 9 (expr -> term * expr .)
-    $end            reduce using rule 9 (expr -> term * expr .)
-    )               reduce using rule 9 (expr -> term * expr .)
-
-
-state 25
-
-    (10) expr -> term / expr .
-
-    NL              reduce using rule 10 (expr -> term / expr .)
-    $end            reduce using rule 10 (expr -> term / expr .)
-    )               reduce using rule 10 (expr -> term / expr .)
-
-
 state 26
 
-    (12) term -> factor + term .
+    (10) infix6 -> + expr .
 
-    *               reduce using rule 12 (term -> factor + term .)
-    /               reduce using rule 12 (term -> factor + term .)
-    NL              reduce using rule 12 (term -> factor + term .)
-    $end            reduce using rule 12 (term -> factor + term .)
-    )               reduce using rule 12 (term -> factor + term .)
+    NL              reduce using rule 10 (infix6 -> + expr .)
+    $end            reduce using rule 10 (infix6 -> + expr .)
+    )               reduce using rule 10 (infix6 -> + expr .)
 
 
 state 27
 
-    (13) term -> factor - term .
+    (11) infix6 -> - expr .
 
-    *               reduce using rule 13 (term -> factor - term .)
-    /               reduce using rule 13 (term -> factor - term .)
-    NL              reduce using rule 13 (term -> factor - term .)
-    $end            reduce using rule 13 (term -> factor - term .)
-    )               reduce using rule 13 (term -> factor - term .)
+    NL              reduce using rule 11 (infix6 -> - expr .)
+    $end            reduce using rule 11 (infix6 -> - expr .)
+    )               reduce using rule 11 (infix6 -> - expr .)
 
 
 state 28
 
-    (17) factor -> ( expr ) .
+    (14) infix7 -> * term .
 
-    +               reduce using rule 17 (factor -> ( expr ) .)
-    -               reduce using rule 17 (factor -> ( expr ) .)
-    *               reduce using rule 17 (factor -> ( expr ) .)
-    /               reduce using rule 17 (factor -> ( expr ) .)
-    NL              reduce using rule 17 (factor -> ( expr ) .)
-    $end            reduce using rule 17 (factor -> ( expr ) .)
-    )               reduce using rule 17 (factor -> ( expr ) .)
+    +               reduce using rule 14 (infix7 -> * term .)
+    -               reduce using rule 14 (infix7 -> * term .)
+    NL              reduce using rule 14 (infix7 -> * term .)
+    $end            reduce using rule 14 (infix7 -> * term .)
+    )               reduce using rule 14 (infix7 -> * term .)
+
+
+state 29
+
+    (15) infix7 -> / term .
+
+    +               reduce using rule 15 (infix7 -> / term .)
+    -               reduce using rule 15 (infix7 -> / term .)
+    NL              reduce using rule 15 (infix7 -> / term .)
+    $end            reduce using rule 15 (infix7 -> / term .)
+    )               reduce using rule 15 (infix7 -> / term .)
+
+
+state 30
+
+    (19) factor -> ( expr ) .
+
+    *               reduce using rule 19 (factor -> ( expr ) .)
+    /               reduce using rule 19 (factor -> ( expr ) .)
+    +               reduce using rule 19 (factor -> ( expr ) .)
+    -               reduce using rule 19 (factor -> ( expr ) .)
+    NL              reduce using rule 19 (factor -> ( expr ) .)
+    $end            reduce using rule 19 (factor -> ( expr ) .)
+    )               reduce using rule 19 (factor -> ( expr ) .)
 
